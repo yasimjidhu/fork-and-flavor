@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Akaya+Kanadaka&family=Bree+Serif&family=DM+Serif+Text&display=swap');
+
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .primary {
+    font-family: "Bree Serif", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  .dm-serif-text-regular {
+    font-family: "DM Serif Text", serif;
+    font-weight: 400;
+    font-style: normal;
+  }  
+  .akaya-kanadaka-regular {
+    font-family: "Akaya Kanadaka", serif;
+    font-weight: 800;
+    font-style: normal;
+  }
+}
+
+

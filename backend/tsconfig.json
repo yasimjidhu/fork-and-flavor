@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES6",                        // Specify ECMAScript target version
+    "module": "commonjs",                   // Specify module code generation
+    "strict": true,                          // Enable strict type-checking options
+    "esModuleInterop": true,                 // Allow importing non-ESM modules
+    "skipLibCheck": true,                    // Skip type checking of declaration files
+    "forceConsistentCasingInFileNames": true, // Ensure file name casing is consistent
+    "outDir": "./dist",                      // Output folder for compiled JavaScript
+    "baseUrl": ".",                          // Base directory for resolving non-relative module names
+    "paths": {
+      "*": ["node_modules/*", "src/types/*"]
+    }
+  },
+  "include": ["src/**/*"],                   // Include all files in the src folder
+  "exclude": ["node_modules", "dist"]        // Exclude node_modules and dist folders
+}
