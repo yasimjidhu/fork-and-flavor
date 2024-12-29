@@ -62,7 +62,7 @@ const Login = () => {
               required
             />
           </div>
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {error && <p className="text-red-500 text-sm text-center primary">{error}</p>}
           <button
             type="submit"
             className="w-full px-4 py-2 text-white bg-yellow-600 rounded hover:bg-yellow-700 focus:outline-none"

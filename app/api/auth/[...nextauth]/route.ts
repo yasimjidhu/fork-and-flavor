@@ -16,35 +16,57 @@ const handler = NextAuth({
             clientSecret: config.GOOGLE_CLIENT_SECRET!,
         }),
         CredentialsProvider({
-            name:'Credentials',
+            name:'credentials',
             credentials:{
                 email:{label:'Email',type:'email'},
                 password:{label:'password',type:'password'},
+                username:{label:'Username',type:'text'},
             },
             async authorize(credentials:any){
-                const {email,password} = credentials;
+                const {email,password,username} = credentials;
 
                 connectDB()
 
-                // find the user by email
-                const user = await User.findOne({email})
+                // check if the user is trying to register or login
+                const existingUser = await User.findOne({email})
 
-                if(!user){
-                    throw new Error('user not found')
+                // if user exists , validate password (login attempt)
+                if(existingUser){
+                    const isValidPassword = await bcrypt.compare(password,existingUser.password)
+                    if(!isValidPassword){
+                        throw new Error('invalid password')
+                    }
+                    return {email:existingUser.email,username:existingUser.name}
                 }
 
-                const isValidPassword = bcrypt.compare(password,user.password)
+                // if the user doesn't exist, create a new user (registration attempt)
+                if(username){
+                    const hashedPassword = await bcrypt.hash(password,10)
+                    const newUser = new User({
+                        name:username,
+                        email,
+                        password:hashedPassword,
+                        image:'',
+                        googleId:'',
+                        createdAt:new Date()
+                    })
 
-                if(!isValidPassword){
-                    throw new Error('invalid password')
+
+                    try {
+                        await newUser.save()
+                    } catch (error:any) {
+                        console.error('error saving user',error)
+                        throw new Error('user registration failed')
+                    }
+
+                    return {email:newUser.email,username:newUser.name}
                 }
-
-                return {email:user.email}
             }
         })
     ],
     pages: {
         signIn: '/auth/login',
+        signup:'/auth/register',
     },
     secret: config.NEXTAUTH_SECRET,
     callbacks: {

@@ -35,7 +35,7 @@ export const Navbar = () => {
           <a href="/add-recipe" className="text-sm md:text-lg primary">Home</a>
           <a href="" className="text-sm md:text-lg primary">About us</a>
           <a href="" className="text-sm md:text-lg primary">Explore</a>
-          <a href="" className="text-sm md:text-lg primary">Reviews</a>
+          <a href="/auth/register" className="text-sm md:text-lg primary">Register</a>
         </div>
       </div>
 
