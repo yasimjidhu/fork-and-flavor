@@ -3,12 +3,31 @@
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDebounce } from "../hooks/useDebounce";
+import { useSearch } from "../context/SearchContext";
 
 export const Navbar = () => {
   const [dropDownOpen,setDropDownOpen] = useState(false)
+  const [query,setQuery] = useState("")
+  
+  const {setSearchResults} = useSearch()
+  const debouncedQuery = useDebounce(query,500)
   const { data: session, status } = useSession();
   const router = useRouter()
+
+  const handleSearch = async ()=>{
+    if(debouncedQuery){
+      const res = await fetch(`/api/recipes/search?search=${debouncedQuery}`)
+      const data = await res.json()
+      setSearchResults(data.recipes)
+    }
+  }
+
+  useEffect(() => {
+    handleSearch();
+  }, [debouncedQuery]);
+
 
   if (status === 'loading') {
     return <div>Loading...</div>;
@@ -21,6 +40,8 @@ export const Navbar = () => {
   const handleLogout = async () => {
     await signOut({ callbackUrl: '/auth/login' });
   };
+
+ 
 
   return (
     <div className="bg-slate-100 grid grid-cols-12 h-14 mt-4 mb-4 items-center">
@@ -43,8 +64,10 @@ export const Navbar = () => {
       <div className="col-span-4 flex items-center justify-center p-2 space-x-2 relative">
         <input
           type="text"
+          value={query}
+          onChange={(e)=>setQuery(e.target.value)}
           className="rounded-full w-full sm:w-3/4 h-10 px-4 py-2"
-          placeholder="Search..."
+          placeholder="Search for recipes"
         />
         <i className="text-xl text-primary cursor-pointer fa-solid fa-magnifying-glass absolute right-20"></i>
       </div>

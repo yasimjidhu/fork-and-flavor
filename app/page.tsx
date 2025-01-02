@@ -1,34 +1,64 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Navbar } from "./components/Navbar";
 import Image from "next/image";
 import RecipeListing from "./components/ListRecipes";
+import CategoryCard from "./components/CategoryCard";
+import { useDebounce } from "./hooks/useDebounce";
+import { useSearch } from "./context/SearchContext";
 
 interface Recipe {
-  id: string;
   name: string;
   description: string;
-  ingredients: string[];
   instructions: string[];
+  ingredients: string[];
+  category: string;
+  servings: number;
+  prepTime: string;
+  cookTime: string;
+  difficulty: string;
+  image: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  _id?: string;
 }
 
+
 const Home = () => {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([])
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const router =  useRouter()
+  const { searchResults } = useSearch()
+
+  const router = useRouter()
+
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await fetch('/api/recipes')
+        if (!response.ok) {
+          throw new Error(`error: ${response.status}`)
+        }
+        const data = await response.json()
+        setRecipes(data.recipes)
+      } catch (error: any) {
+        setError(error.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchRecipes()
+  }, [])
 
 
-  const handleAddRecipeClick = ()=>{
+  const handleAddRecipeClick = () => {
     router.push('/add-recipe')
   }
-
-  
-
+  console.log('searchresults', searchResults)
   return (
     <div>
-      <Navbar />
       <div className=" grid grid-cols-2">
         {/* Left Column */}
         <div className="col-span-1  place-items-start p-10">
@@ -57,56 +87,20 @@ const Home = () => {
         </div>
       </div>
       {/* category section */}
-      <div className=" grid grid-cols-4 gap-4 w-full place-items-center text-center mt-6">
-        <div className="bg-slate-200 w-full rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer">
-          <div className="bg-violet-400 rounded-full w-20 h-20 overflow-hidden ">
-            <Image
-              src="/pizz-small.jpg"
-              width={80}
-              height={80}
-              alt="pizza"
-              className="object-cover w-full h-full"
-            />
+
+      <>
+        {searchResults && searchResults.length > 0 ? (
+          <RecipeListing recipes={searchResults} title="search results" />
+        ) : (
+          <div className="grid grid-cols-4 gap-4 text-center mt-12">
+            <CategoryCard image="/pizz-small.jpg" title="Main-Course" />
+            <CategoryCard image="/appetizer.jpg" title="Appetizer" />
+            <CategoryCard image="/dessert.jpg" title="Dessert" />
+            <CategoryCard image="/snacks.jpg" title="Snacks" />
           </div>
-          <h5 className="primary mt-2 text-xl">Main Course</h5>
-        </div>
-        <div className="bg-slate-200 w-full rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer">
-          <div className="bg-violet-400 rounded-full w-20 h-20 overflow-hidden ">
-            <Image
-              src="/appetizer.jpg"
-              width={80}
-              height={80}
-              alt="dessert"
-              className="object-cover w-full h-full"
-            />
-          </div>
-          <h5 className="primary mt-2 text-xl">Dessert</h5>
-        </div>
-        <div className="bg-slate-200 w-full rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer">
-          <div className="bg-violet-400 rounded-full w-20 h-20 overflow-hidden ">
-            <Image
-              src="/dessert.jpg"
-              width={80}
-              height={80}
-              alt="snacks"
-              className="object-cover w-full h-full"
-            />
-          </div>
-          <h5 className="primary mt-2 text-xl">Snacks</h5>
-        </div>
-        <div className="bg-slate-200 w-full rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer">
-          <div className="bg-violet-400 rounded-full w-20 h-20 overflow-hidden ">
-            <Image
-              src="/snacks.jpg"
-              width={80}
-              height={80}
-              alt="appetizer"
-              className="object-cover w-full h-full"
-            />
-          </div>
-          <h5 className="primary mt-2 text-xl">Appetizer</h5>
-        </div>
-      </div>
+        )}
+      </>
+
       {/* explore section */}
       <div className=" grid grid-cols-2 mt-12">
 
@@ -119,14 +113,14 @@ const Home = () => {
               width={740}
               height={300}
               layout="intrinsic"
-              objectFit="cover" 
+              objectFit="cover"
             />
           </div>
         </div>
 
         {/* right Column */}
         <div className="col-span-1  place-items-start p-10">
-          <h1 className="primary text-5xl leading-normal">Welcome to the trips <br />food where the food <br />  changes with the <br/> seasons</h1>
+          <h1 className="primary text-5xl leading-normal">Welcome to the trips <br />food where the food <br />  changes with the <br /> seasons</h1>
           <div>
             <h6>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex minus qui at odio, et officia nobis cum, quia omnis molestias nesciunt dolores voluptas architecto laboriosam? </h6>
           </div>
@@ -135,7 +129,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <RecipeListing recipes={recipes} />
+      <RecipeListing recipes={recipes} title='Explore Our Delicious Recipes' />
     </div>
   );
 }
