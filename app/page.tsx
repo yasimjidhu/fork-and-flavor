@@ -56,24 +56,25 @@ const Home = () => {
   const handleAddRecipeClick = () => {
     router.push('/add-recipe')
   }
-  console.log('searchresults', searchResults)
+
   return (
     <div>
-      <div className=" grid grid-cols-2">
+      <div className=" grid md:grid-cols-2 md:p-2 p-2 mt-6 gap-4 lg:mt-8 ">
         {/* Left Column */}
-        <div className="col-span-1  place-items-start p-10">
-          <h1 className="primary text-5xl leading-normal">Good food choices <br />are good <br />  investments</h1>
+        <div className="col-span-1  place-items-start lg:p-10 lg:space-y-10">
+          <h1 className="primary text-3xl lg:text-4xl xl:text-5xl leading-tight">Good food choices are good  investments</h1>
           <div>
-            <h6>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex minus qui at odio, et officia nobis cum, quia omnis molestias nesciunt dolores voluptas architecto laboriosam? </h6>
+            <h6 className="text-md md:text-lg text-wrap mt-4 leading-tight font-normal">Fork & Flavor is a recipe app designed to inspire creativity in the kitchen. Discover a variety of recipes, customize them, and track your cooking journey. Whether you're a beginner or an expert, Fork & Flavor has something for everyone.
+            </h6>
           </div>
-          <div className="flex justify-between w-[52%] mt-6">
-            <button className="px-4 py-3 rounded-full bg-yellow-500 primary text-xl shadow-md" onClick={handleAddRecipeClick}>+ Recipe</button>
-            <button className="px-4 py-3 rounded-full bg-slate-300 primary text-xl shadow-md">Watch Video</button>
+          <div className="flex flex-col md:flex-row justify-start gap-4 xl:justify-between xl:w-[52%] mt-6 w-full ">
+            <button className="py-1 px-4 md:py-2 rounded-full bg-yellow-500 primary text-lg md:text-xl shadow-md  " onClick={handleAddRecipeClick}>+ Recipe</button>
+            <button className="py-1 px-4 md:py-2 rounded-full bg-slate-300 primary text-lg md:text-xl shadow-md ">Watch Video</button>
           </div>
         </div>
 
         {/* Right Column with Image */}
-        <div className="col-span-1 place-items-center h-full flex justify-center">
+        <div className="col-span-1 place-items-center h-full flex justify-center mt-4 md:mt-0">
           <div className="w-full max-h-[450px] overflow-hidden rounded-3xl">
             <Image
               src="/pizza.jpg"
@@ -92,7 +93,7 @@ const Home = () => {
         {searchResults && searchResults.length > 0 ? (
           <RecipeListing recipes={searchResults} title="search results" />
         ) : (
-          <div className="grid grid-cols-4 gap-4 text-center mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-center mt-12 lg:p-4">
             <CategoryCard image="/pizz-small.jpg" title="Main-Course" />
             <CategoryCard image="/appetizer.jpg" title="Appetizer" />
             <CategoryCard image="/dessert.jpg" title="Dessert" />
@@ -102,7 +103,7 @@ const Home = () => {
       </>
 
       {/* explore section */}
-      <div className=" grid grid-cols-2 mt-12">
+      <div className=" grid grid-cols-1 lg:grid-cols-2 mt-12 gap-6 lg:p-4 ">
 
         {/* left Column with Image */}
         <div className="col-span-1 place-items-center h-full flex justify-center">
@@ -119,13 +120,13 @@ const Home = () => {
         </div>
 
         {/* right Column */}
-        <div className="col-span-1  place-items-start p-10">
-          <h1 className="primary text-5xl leading-normal">Welcome to the trips <br />food where the food <br />  changes with the <br /> seasons</h1>
-          <div>
-            <h6>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex minus qui at odio, et officia nobis cum, quia omnis molestias nesciunt dolores voluptas architecto laboriosam? </h6>
+        <div className="col-span-1 place-items-start p-2 lg:p-8 lg:space-y-8 mt-4 md:mt-2">
+          <h1 className="primary text-lg lg:text-4xl leading-tight xl:leading-relaxed md:text-xl">Welcome to the trips food where the food changes with the seasons</h1>
+          <div className="mt-4">
+            <h6 className="md:text-justify">Explore an extensive collection of delicious recipes on Fork & Flavor, where you can discover new dishes from all over the world. Whether you're craving a quick weeknight meal or looking to experiment with gourmet flavors, our app offers a variety of recipes to suit every taste.  </h6>
           </div>
-          <div className="flex justify-start w-[60%] mt-6">
-            <button className="px-4 py-2 rounded-full bg-yellow-500 primary text-xl shadow-sm">Explore our story</button>
+          <div className="flex justify-start lg:w-[60%] w-full mt-6 ">
+            <button className="px-4 py-2 rounded-full bg-yellow-500 primary text-md md:text-xl shadow-sm w-full hover:">Explore our story</button>
           </div>
         </div>
       </div>

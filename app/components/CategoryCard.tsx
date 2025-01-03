@@ -22,7 +22,7 @@ const CategoryCard = ({ image, title }: CategoryCardProps) => {
           className="w-full h-full"
         />
       </div>
-      <h5 className="text-xl font-semibold text-gray-800 p-2">{title}</h5>
+      <h5 className="text-lg md:text-xl font-semibold text-gray-800 p-2 primary">{title}</h5>
       </Link>
     </div>
   );

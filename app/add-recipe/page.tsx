@@ -346,7 +346,7 @@ const AddRecipe = () => {
             <button
               type="button"
               onClick={handleSubmit}
-              className="bg-yellow-400 w-full p-2 rounded-lg text-md font-medium text-gray-800 hover:bg-yellow-500 transition"
+              className="bg-yellow-500 w-full p-2 rounded-lg text-md font-medium text-gray-800 hover:bg-yellow-500 transition"
               disabled={imageLoding}
             >
               {imageLoding ? (

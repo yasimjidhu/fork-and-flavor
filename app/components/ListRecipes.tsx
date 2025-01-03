@@ -28,11 +28,11 @@ interface RecipeListingProps {
 const RecipeListing: FC<RecipeListingProps> = ({ recipes,title }) => {
 
     return (
-        <div className="px-6 ">
-            <h2 className="text-2xl font-bold text-center mb-8 mt-10 text-gray-800 font-primary">
+        <div className="">
+            <h2 className="text-lg md:text-2xl font-bold text-center mb-2 mt-6 text-gray-800 font-primary xl:mt-14">
                 {title}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {recipes.map((recipe) => (
                     <Link href={`/recipes/${recipe._id}`} key={recipe._id}>
                         <div className="bg-white flex flex-col items-stretch h-full p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-pointer">
