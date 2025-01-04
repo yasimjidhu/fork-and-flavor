@@ -2,7 +2,7 @@
 
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import { useSearch } from "../context/SearchContext";
 import Link from 'next/link';
@@ -16,17 +16,18 @@ export const Navbar = () => {
   const debouncedQuery = useDebounce(query, 500);
   const { data: session, status } = useSession();
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     if (debouncedQuery) {
       const res = await fetch(`/api/recipes/search?search=${debouncedQuery}`);
       const data = await res.json();
       setSearchResults(data.recipes);
     }
-  };
+  }, [debouncedQuery,setSearchResults]);
+
 
   useEffect(() => {
     handleSearch();
-  }, [debouncedQuery]);
+  }, [debouncedQuery,handleSearch]);
 
   if (status === 'loading') {
     return <div>Loading...</div>;

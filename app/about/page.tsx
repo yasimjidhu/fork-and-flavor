@@ -6,12 +6,12 @@ const About = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 space-y-6 md:space-y-0 p-4 md:w-full mt-4">
       <div className="space-y-4">
         <div className="leading-relaxed text-justify">
-          <h1 className="primary text-xl">About Fork & Flavor</h1>
+          <h1 className="primary text-xl">About Fork and Flavor</h1>
           <p>
-            Welcome to Fork & Flavor, the ultimate dining companion for food enthusiasts! Our mission is simple:
-            to revolutionize the way you discover, personalize, and enjoy dining experiences. Whether you're a foodie
-            exploring new cuisines or someone looking for the perfect meal, Fork & Flavor is here to make it easy, fun,
-            and memorable.
+            Welcome to Fork and Flavor, the ultimate dining companion for food enthusiasts! Our mission is simple:
+            to revolutionize the way you discover, personalize, and enjoy dining experiences. Whether you are  a foodie
+            exploring new cuisines or someone looking for the perfect meal, Fork and Flavor is here to make it easy, fun,
+            and memorable. 
           </p>
         </div>
 
@@ -36,8 +36,8 @@ const About = () => {
         <div className="leading-relaxed text-justify">
           <h1 className="primary text-xl">The Story Behind Fork & Flavor</h1>
           <p>
-            Fork & Flavor was born from a passion for food and technology. As a tech enthusiast and food lover, I
-            wanted to create a platform that blends the best of both worlds. From ideation to execution, Fork & Flavor
+            Fork and Flavor was born from a passion for food and technology. As a tech enthusiast and food lover, I
+            wanted to create a platform that blends the best of both worlds. From ideation to execution, Fork and Flavor
             is a reflection of my dedication to bringing value to food enthusiasts everywhere.
           </p>
         </div>
