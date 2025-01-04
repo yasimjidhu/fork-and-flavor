@@ -4,9 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/utils/mongodb";
 import Recipe from "@/app/models/recipe";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, context: { params: { id: string } }) {
   try {
-    const { id } = params; // Retrieve the recipe ID from URL parameters
+    const { id } = context.params
 
     // Connect to the database
     await connectDB();
