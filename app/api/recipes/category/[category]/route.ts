@@ -6,7 +6,6 @@ export async function GET(req: NextRequest,{ params }: { params: { category: str
   try {
 
     const { category } = params
-    console.log('category in bakcend',category)
 
     if (!category) {
       return NextResponse.json(

@@ -51,10 +51,11 @@ export const Navbar = () => {
         {/* Logo */}
         <div className="text-start">
           <h1 className="font-bold text-yellow-500 drop-shadow-lg tracking-wide">
-            <span className="bg-gradient-to-r from-yellow-500 to-orange-500 text-transparent bg-clip-text text-lg md:text-2xl lg:text-3xl">
-              Fork & Flavor
+            <span className="bg-gradient-to-r from-yellow-500 to-orange-500 text-transparent bg-clip-text text-lg md:text-md lg:text-3xl">
+              Fork &amp; Flavor
             </span>
           </h1>
+
         </div>
 
         {/* Hamburger Icon */}

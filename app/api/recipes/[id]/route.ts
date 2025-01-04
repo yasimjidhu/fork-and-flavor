@@ -23,11 +23,13 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
     // Return the recipe data
     return NextResponse.json({ recipe }, { status: 200 });
-  } catch (error: any) {
-    console.log('Error:', error);
-    return NextResponse.json(
-      { message: 'Failed to fetch recipe', error: error.message },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    if(error instanceof Error){
+      console.log('Error:', error);
+      return NextResponse.json(
+        { message: 'Failed to fetch recipe', error: error.message },
+        { status: 500 }
+      );
+    }
   }
 }
