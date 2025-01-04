@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 const AddRecipe = () => {
   const [imageLoding, setImageLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string|null>(null);
   const [currentInstruction, setCurrentInstruction] = useState('');
   const [recipeData, setRecipeData] = useState({
     name: '',
@@ -26,7 +26,7 @@ const AddRecipe = () => {
 
   const router = useRouter();
 
-  const handleInputChange = (e: React.ChangeEvent<any>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setRecipeData((prev) => ({ ...prev, [name]: value }));
   };
@@ -63,8 +63,15 @@ const AddRecipe = () => {
       } else {
         throw new Error('Failed to upload image');
       }
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      if(error instanceof Error){
+        setError(error.message);
+        console.error("Error uploading image:", error.message);
+      }else{
+        setError("An unknown error occurred"); // handle non-Error cases
+        console.error("Error uploading image: Unknown error");
+  
+      }
       console.error("Error uploading image:", error);
     } finally {
       setImageLoading(false);
@@ -130,9 +137,11 @@ const AddRecipe = () => {
         const errorData = await response.json();
         console.error('Failed to add recipe:', errorData.error);
       }
-    } catch (error: any) {
-      setError(error);
-      console.error('Error submitting recipe:', error);
+    } catch (error: unknown) {
+      if(error instanceof Error){
+        setError(error.message);
+        console.error('Error submitting recipe:', error);
+      }
     }
   };
 

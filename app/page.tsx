@@ -1,34 +1,18 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import RecipeListing from "./components/ListRecipes";
 import CategoryCard from "./components/CategoryCard";
-import { useDebounce } from "./hooks/useDebounce";
 import { useSearch } from "./context/SearchContext";
-
-interface Recipe {
-  name: string;
-  description: string;
-  instructions: string[];
-  ingredients: string[];
-  category: string;
-  servings: number;
-  prepTime: string;
-  cookTime: string;
-  difficulty: string;
-  image: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  _id?: string;
-}
+import Recipe from "@/types/recipe";
 
 
 const Home = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string|null>(null);
 
   const { searchResults } = useSearch()
 
@@ -43,8 +27,10 @@ const Home = () => {
         }
         const data = await response.json()
         setRecipes(data.recipes)
-      } catch (error: any) {
-        setError(error.message)
+      } catch (error: unknown) {
+        if(error instanceof  Error){
+          setError(error.message)
+        }
       } finally {
         setLoading(false)
       }
@@ -55,6 +41,13 @@ const Home = () => {
 
   const handleAddRecipeClick = () => {
     router.push('/add-recipe')
+  }
+
+  if(loading){
+    <h1>loading..</h1>
+  }
+  if(error){
+    <h1>{error}</h1>
   }
 
   return (

@@ -27,12 +27,18 @@ export async function GET(req: NextRequest) {
 
     // Return the search results
     return NextResponse.json({ recipes }, { status: 200 });
-  } catch (error: any) {
-    console.error("Error fetching search results:", error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { message: 'Failed to fetch recipes', error: error.message },
+        { status: 500 }
+      );
+    } else {
+      return NextResponse.json(
+        { message: 'An unknown error occurred', error: 'Unknown error' },
+        { status: 500 }
+      );
+    }
 
-    return NextResponse.json(
-      { message: "Failed to fetch search results", error: error.message },
-      { status: 500 }
-    );
   }
 }

@@ -41,33 +41,44 @@ export async function POST(req: NextRequest) {
 
     // Return a success response
     return NextResponse.json({ message: 'Recipe added successfully' }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.log('Error:', error);
 
-    // Return an error response
-    return NextResponse.json(
-      { message: 'Failed to add recipe', error: error.message },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { message: 'Failed to add recipe', error: error.message },
+        { status: 500 }
+      );
+    } else {
+      return NextResponse.json(
+        { message: 'An unknown error occurred', error: 'Unknown error' },
+        { status: 500 }
+      );
+    }
   }
 }
-export async function GET(req: NextRequest) {
+export async function GET() {
     try {
       // Connect to the database
       await connectDB();
   
       // Fetch all recipes from the database
-      const recipes = await Recipe.find(); // You can modify this to add filtering, sorting, or pagination if needed
+      const recipes = await Recipe.find();
   
-      // Return the list of recipes
       return NextResponse.json({ recipes }, { status: 200 });
-    } catch (error: any) {
-      console.log('Error:', error);
-  
-      // Return an error response
+
+    } catch (error: unknown) {
+
+      if (error instanceof Error) {
       return NextResponse.json(
         { message: 'Failed to fetch recipes', error: error.message },
         { status: 500 }
       );
+    } else {
+      return NextResponse.json(
+        { message: 'An unknown error occurred', error: 'Unknown error' },
+        { status: 500 }
+      );
+    }
     }
   }

@@ -1,10 +1,16 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import  CredentialsProvider  from 'next-auth/providers/credentials';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { config } from '@/config/env';
 import User from '@/app/models/user';
 import bcrypt from 'bcryptjs'
 import { connectDB } from '@/utils/mongodb';
+
+interface Credentials {
+    email: string;
+    password: string;
+    username: string;
+}
 
 connectDB();
 
@@ -16,57 +22,57 @@ const handler = NextAuth({
             clientSecret: config.GOOGLE_CLIENT_SECRET!,
         }),
         CredentialsProvider({
-            name:'credentials',
-            credentials:{
-                email:{label:'Email',type:'email'},
-                password:{label:'password',type:'password'},
-                username:{label:'Username',type:'text'},
+            name: 'credentials',
+            credentials: {
+                email: { label: 'Email', type: 'email' },
+                password: { label: 'password', type: 'password' },
+                username: { label: 'Username', type: 'text' },
             },
-            async authorize(credentials:any){
-                const {email,password,username} = credentials;
+            async authorize(credentials: Credentials) {
+                const { email, password, username } = credentials;
 
                 connectDB()
 
                 // check if the user is trying to register or login
-                const existingUser = await User.findOne({email})
+                const existingUser = await User.findOne({ email })
 
                 // if user exists , validate password (login attempt)
-                if(existingUser){
-                    const isValidPassword = await bcrypt.compare(password,existingUser.password)
-                    if(!isValidPassword){
+                if (existingUser) {
+                    const isValidPassword = await bcrypt.compare(password, existingUser.password)
+                    if (!isValidPassword) {
                         throw new Error('invalid password')
                     }
-                    return {email:existingUser.email,username:existingUser.name}
+                    return { email: existingUser.email, username: existingUser.name }
                 }
 
                 // if the user doesn't exist, create a new user (registration attempt)
-                if(username){
-                    const hashedPassword = await bcrypt.hash(password,10)
+                if (username) {
+                    const hashedPassword = await bcrypt.hash(password, 10)
                     const newUser = new User({
-                        name:username,
+                        name: username,
                         email,
-                        password:hashedPassword,
-                        image:'',
-                        googleId:'',
-                        createdAt:new Date()
+                        password: hashedPassword,
+                        image: '',
+                        googleId: '',
+                        createdAt: new Date()
                     })
 
 
                     try {
                         await newUser.save()
-                    } catch (error:any) {
-                        console.error('error saving user',error)
+                    } catch (error: unknown) {
+                        console.error('error saving user', error)
                         throw new Error('user registration failed')
                     }
 
-                    return {email:newUser.email,username:newUser.name}
+                    return { email: newUser.email, username: newUser.name }
                 }
             }
         })
     ],
     pages: {
         signIn: '/auth/login',
-        signup:'/auth/register',
+        signup: '/auth/register',
     },
     secret: config.NEXTAUTH_SECRET,
     callbacks: {
@@ -92,11 +98,11 @@ const handler = NextAuth({
             }
             return true;
         },
-        
-        async jwt({ token, account, user }) {
+
+        async jwt({ token, account }) {
             if (account && account.provider === 'google') {
                 let existingUser = await User.findOne({ googleId: account.providerAccountId });
-        
+
                 if (!existingUser) {
                     // Create user if it doesn't exist
                     existingUser = new User({
@@ -108,14 +114,14 @@ const handler = NextAuth({
                     });
                     await existingUser.save();
                 }
-        
+
                 token.id = existingUser._id;
                 token.email = existingUser.email;
                 token.name = existingUser.name;
                 token.image = existingUser.image;
             }
             return token;
-        },        
+        },
         async session({ session, token }) {
             if (token) {
                 // Add token data to session

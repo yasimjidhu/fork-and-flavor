@@ -8,9 +8,11 @@ export async function GET() {
         return new Response(JSON.stringify(users), {
             headers: { 'Content-Type': 'application/json' }
         })
-    } catch (error: any) {
-        console.error(error)
-        return new Response('Failed to fetch users', { status: 500 })
+    } catch (error: unknown) {
+        if(error instanceof Error){
+            console.error(error)
+            return new Response('Failed to fetch users', { status: 500 })
+        }
     }
 }
 
