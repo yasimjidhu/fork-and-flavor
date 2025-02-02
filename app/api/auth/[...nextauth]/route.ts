@@ -3,14 +3,9 @@ import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { config } from '@/config/env';
 import User from '@/app/models/user';
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
 import { connectDB } from '@/utils/mongodb';
 
-interface Credentials {
-    email: string;
-    password: string;
-    username: string;
-}
 
 connectDB();
 
@@ -25,59 +20,65 @@ const handler = NextAuth({
             name: 'credentials',
             credentials: {
                 email: { label: 'Email', type: 'email' },
-                password: { label: 'password', type: 'password' },
+                password: { label: 'Password', type: 'password' },
                 username: { label: 'Username', type: 'text' },
             },
-            async authorize(credentials: Credentials) {
-                const { email, password, username } = credentials;
-
-                connectDB()
-
-                // check if the user is trying to register or login
-                const existingUser = await User.findOne({ email })
-
-                // if user exists , validate password (login attempt)
-                if (existingUser) {
-                    const isValidPassword = await bcrypt.compare(password, existingUser.password)
-                    if (!isValidPassword) {
-                        throw new Error('invalid password')
-                    }
-                    return { email: existingUser.email, username: existingUser.name }
+            // Adjust the type of credentials to match the expected type from NextAuth
+            async authorize(credentials: Record<string, string> | undefined) {
+                if (!credentials) {
+                    throw new Error('Missing credentials');
                 }
 
-                // if the user doesn't exist, create a new user (registration attempt)
+                const { email, password, username } = credentials;
+
+                connectDB();
+
+                // Check if the user is trying to register or login
+                const existingUser = await User.findOne({ email });
+
+                // If the user exists, validate password (login attempt)
+                if (existingUser) {
+                    const isValidPassword = await bcrypt.compare(password, existingUser.password);
+                    if (!isValidPassword) {
+                        throw new Error('Invalid password');
+                    }
+                    // Return the expected User structure
+                    return { id: existingUser._id, email: existingUser.email, name: existingUser.name, image: existingUser.image };
+                }
+
+                // If the user doesn't exist, create a new user (registration attempt)
                 if (username) {
-                    const hashedPassword = await bcrypt.hash(password, 10)
+                    const hashedPassword = await bcrypt.hash(password, 10);
                     const newUser = new User({
                         name: username,
                         email,
                         password: hashedPassword,
                         image: '',
                         googleId: '',
-                        createdAt: new Date()
-                    })
-
+                        createdAt: new Date(),
+                    });
 
                     try {
-                        await newUser.save()
-                    } catch (error: unknown) {
-                        console.error('error saving user', error)
-                        throw new Error('user registration failed')
+                        await newUser.save();
+                    } catch (error) {
+                        console.error('Error saving user', error);
+                        throw new Error('User registration failed');
                     }
 
-                    return { email: newUser.email, username: newUser.name }
+                    // Return the expected User structure
+                    return { id: newUser._id, email: newUser.email, name: newUser.name, image: newUser.image };
                 }
+
+                return null; // If neither login nor registration is successful, return null
             }
         })
     ],
     pages: {
-        signIn: '/auth/login',
-        signup: '/auth/register',
+        signIn: '/auth/login', // Specify only the signIn page
     },
     secret: config.NEXTAUTH_SECRET,
     callbacks: {
         async signIn({ user, account, profile }) {
-
             if (account?.provider === 'google') {
                 const existingUser = await User.findOne({ email: profile?.email });
                 if (!existingUser) {
@@ -104,7 +105,6 @@ const handler = NextAuth({
                 let existingUser = await User.findOne({ googleId: account.providerAccountId });
 
                 if (!existingUser) {
-                    // Create user if it doesn't exist
                     existingUser = new User({
                         name: account.name,
                         email: account.email,
@@ -122,13 +122,16 @@ const handler = NextAuth({
             }
             return token;
         },
+
         async session({ session, token }) {
             if (token) {
-                // Add token data to session
+
+                session.user = session.user || {}
+                
                 session.user.id = token.id as string;
                 session.user.email = token.email as string;
                 session.user.name = token.name as string;
-                session.user.image = token.image as string || '/user.png'
+                session.user.image = token.image as string || '/user.png';
             }
             return session;
         },

@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 export const Navbar = () => {
   const [dropDownOpen, setDropDownOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false); // For toggle menu
+  const [menuOpen, setMenuOpen] = useState(false); 
   const [query, setQuery] = useState("");
 
   const { setSearchResults } = useSearch();
@@ -17,17 +17,21 @@ export const Navbar = () => {
   const { data: session, status } = useSession();
 
   const handleSearch = useCallback(async () => {
-    if (debouncedQuery) {
-      const res = await fetch(`/api/recipes/search?search=${debouncedQuery}`);
-      const data = await res.json();
-      setSearchResults(data.recipes);
+    if(!query.trim()){
+      setSearchResults([])
+    }else{
+      if (debouncedQuery) {
+        const res = await fetch(`/api/recipes/search?search=${debouncedQuery}`);
+        const data = await res.json();
+        setSearchResults(data.recipes);
+      }
     }
-  }, [debouncedQuery,setSearchResults]);
+  }, [debouncedQuery, setSearchResults,query]);
 
 
   useEffect(() => {
     handleSearch();
-  }, [debouncedQuery,handleSearch]);
+  }, [debouncedQuery, handleSearch]);
 
   if (status === 'loading') {
     return <div>Loading...</div>;
@@ -80,13 +84,15 @@ export const Navbar = () => {
           <Link href="/" className="block md:inline-block px-4 py-2 md:py-0 text-sm md:text-lg text-center primary">
             Explore
           </Link>
-          <Link href="/auth/register" className="block md:inline-block px-4 py-2 md:py-0 text-sm md:text-lg text-center primary">
-            Register
-          </Link>
+          {status == 'unauthenticated' && (
+            <Link href="/auth/register" className="block md:inline-block px-4 py-2 md:py-0 text-sm md:text-lg text-center primary">
+              Register
+            </Link>
+          )}
         </div>
 
         {/* Search Bar */}
-        <div className="flex items-center relative max-w-sm col-span-4">
+        <div className="flex items-center relative max-w-md col-span-6 ">
           <input
             type="text"
             value={query}

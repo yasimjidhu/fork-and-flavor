@@ -3,22 +3,7 @@
 import { FC } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-interface Recipe {
-    name: string;
-    description: string;
-    instructions: string[];
-    ingredients: string[];
-    category: string;
-    servings: number;
-    prepTime: string;
-    cookTime: string;
-    difficulty: string;
-    image: string;
-    createdAt?: Date;
-    updatedAt?: Date;
-    _id?: string;
-}
+import Recipe from "@/types/recipe";
 
 interface RecipeListingProps {
     recipes: Recipe[];
@@ -29,9 +14,9 @@ const RecipeListing: FC<RecipeListingProps> = ({ recipes,title }) => {
 
     return (
         <div className="">
-            <h2 className="text-lg md:text-2xl font-bold text-center mb-2 mt-2 text-gray-800 font-primary xl:mt-4">
+            <h2 className="text-lg md:text-2xl  text-center mb-2 mt-2 text-gray-800 font-primary xl:mt-4 ">
                 {title}
-            </h2>
+            </h2>   
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {recipes.map((recipe) => (
                     <Link href={`/recipes/${recipe._id}`} key={recipe._id}>
@@ -40,7 +25,7 @@ const RecipeListing: FC<RecipeListingProps> = ({ recipes,title }) => {
                             <div className="relative max-h-48 w-full rounded-md overflow-hidden mb-4">
                                 {recipe.image ? (
                                     <Image
-                                        src={recipe.image}
+                                        src={recipe.image as string}
                                         alt={recipe.name}
                                         className="rounded-md object-cover"
                                         width={500}
@@ -63,7 +48,7 @@ const RecipeListing: FC<RecipeListingProps> = ({ recipes,title }) => {
                             </p>
                             {/* Footer Section */}
                             <div className="flex justify-between items-center mt-auto">
-                                <button className="bg-yellow-500 text-white px-4 py-2 rounded-full font-medium shadow hover:bg-yellow-600 transition-colors primary">
+                                <button className="bg-yellow-500 text-white px-4 py-2 rounded-full font-medium shadow primary transition duration-300 ease-linear hover:bg-black hover:text-white">
                                     View Recipe
                                 </button>
                                 <span className="text-sm text-gray-500 font-primary">

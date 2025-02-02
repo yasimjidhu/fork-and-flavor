@@ -4,36 +4,39 @@ import { BeatLoader } from 'react-spinners';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Recipe from '@/types/recipe';
 
 const AddRecipe = () => {
   const [imageLoding, setImageLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(null);
+  const [imageUrl, setImageUrl] = useState<string|null>(null);
   const [error, setError] = useState<string|null>(null);
   const [currentInstruction, setCurrentInstruction] = useState('');
-  const [recipeData, setRecipeData] = useState({
+  const [ingredientsList, setIngredientsList] = useState<string[]>([]);
+  const [instructionsList, setInstructionsList] = useState<string[]>([]);
+  const [recipeData, setRecipeData] = useState<Recipe>({
     name: '',
+    ingredients: [],
     description: '',
-    ingredients: '',
+    instructions:[],
     category: '',
-    servings: '',
+    servings: 0,
     prepTime: '',
     cookTime: '',
     difficulty: '',
-    image: null,
+    image: '',
   });
-  const [ingredientsList, setIngredientsList] = useState<string[]>([]);
-  const [instructionsList, setInstructionsList] = useState<string[]>([]);
 
   const router = useRouter();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement |HTMLTextAreaElement|HTMLSelectElement>) => {
     const { name, value } = e.target;
     setRecipeData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setRecipeData((prev) => ({ ...prev, image: e.target.files[0] }));
+      const file = e.target.files[0];
+      setRecipeData((prev) => ({ ...prev, image:file}));
     }
 
     setImageLoading(true);
@@ -59,7 +62,7 @@ const AddRecipe = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setImageUrl(data.secure_url);
+        setImageUrl(data.secure_url); 
       } else {
         throw new Error('Failed to upload image');
       }
@@ -79,9 +82,9 @@ const AddRecipe = () => {
   };
 
   const handleAddIngredient = () => {
-    if (recipeData.ingredients.trim()) {
-      setIngredientsList((prev) => [...prev, recipeData.ingredients]);
-      setRecipeData((prev) => ({ ...prev, ingredients: '' }));
+    if (recipeData.ingredients.length > 0) {
+      setIngredientsList((prev) => [...prev, ...recipeData.ingredients]);
+      setRecipeData((prev) => ({ ...prev, ingredients: [] }));
     }
   };
 

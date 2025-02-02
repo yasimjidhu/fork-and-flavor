@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import React from 'react';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 const About = () => {
   return (
+    <ProtectedRoute>
     <div className="grid grid-cols-1 md:grid-cols-2 space-y-6 md:space-y-0 p-4 md:w-full mt-4">
       <div className="space-y-4">
         <div className="leading-relaxed text-justify">
@@ -53,6 +55,7 @@ const About = () => {
         />
       </div>
     </div>
+    </ProtectedRoute>
   );
 };
 

@@ -19,7 +19,7 @@ export default function RecipeDetails() {
           });
           if (response.ok) {
             const data = await response.json();
-            setRecipe(data.recipe);
+            setRecipe(data.recipes);
           } else {
             console.error("Error fetching recipe:", response.status);
           }
@@ -47,10 +47,12 @@ export default function RecipeDetails() {
       {/* Hero Section */}
       <div className="relative h-96 md:h-[500px] w-full">
         <Image
-          src={recipe.image}
+          src={recipe.image as string}
           alt={recipe.name}
           fill
           className="object-cover"
+          placeholder="blur"
+          blurDataURL="/placeholder.jpg"
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -63,7 +65,7 @@ export default function RecipeDetails() {
           </p>
         </div>
       </div>
-  
+
       {/* Recipe Details Grid */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Quick Info Section */}
@@ -83,7 +85,7 @@ export default function RecipeDetails() {
             </div>
           </div>
         </div>
-  
+
         <div className="grid md:grid-cols-3 gap-8">
           {/* Ingredients Section */}
           <div className="bg-white rounded-lg shadow-lg p-6 h-[50vh] overflow-auto">
@@ -99,26 +101,28 @@ export default function RecipeDetails() {
               ))}
             </ul>
           </div>
-  
+
           {/* Instructions Section */}
           <div className="md:col-span-2 bg-white rounded-lg shadow-lg p-6 h-[50vh] overflow-auto font-primary">
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-              Instructions
-            </h2>
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Instructions</h2>
             <div className="space-y-6">
-              {recipe.instructions[0].split('.').map((instruction, index) => (
-                <div key={index} className="flex items-start space-x-4">
-                  <span className="flex-shrink-0 w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center font-semibold">
-                    {index + 1}
-                  </span>
-                  <p className="text-gray-700 mt-1">{instruction.trim()}</p>
-                </div>
-              ))}
+              {recipe.instructions[0]
+                .split('.')
+                .filter(instruction => instruction.trim() !== '') // Filter out empty instructions
+                .map((instruction, index) => (
+                  <div key={index} className="flex items-start space-x-4">
+                    <span className="flex-shrink-0 w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center font-semibold">
+                      {index + 1}
+                    </span>
+                    <p className="text-gray-700 mt-1">{instruction.trim()}</p>
+                  </div>
+                ))}
             </div>
           </div>
+
         </div>
       </div>
     </div>
   );
-  
+
 }

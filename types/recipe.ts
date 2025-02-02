@@ -9,7 +9,7 @@ export default class Recipe {
         public prepTime: string, 
         public cookTime: string,  
         public difficulty: string,  
-        public image: string,
+        public image?: string|File,
         public _id?: string, 
         public createdAt?: Date,
         public updatedAt?: Date  

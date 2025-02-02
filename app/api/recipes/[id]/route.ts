@@ -1,35 +1,45 @@
-// app/api/recipe/[id]/route.ts
-
-import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/utils/mongodb";
 import Recipe from "@/app/models/recipe";
+import { connectDB } from "@/utils/mongodb";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
+export async function GET(req: NextRequest,{ params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = context.params
 
-    // Connect to the database
+    const { id } =   await params
+
+    if (!id) {
+      return NextResponse.json(
+        { message: "id parameter is required" },
+        { status: 400 }
+      );
+    }
+
     await connectDB();
 
-    // Fetch the recipe from the database using the ID
-    const recipe = await Recipe.findById(id);
+    const recipes = await Recipe.findById(id)
 
-    if (!recipe) {
+    if (recipes.length === 0) {
       return NextResponse.json(
-        { message: 'Recipe not found' },
+        { message: `No recipes found for id: ${id}` },
         { status: 404 }
       );
     }
 
-    // Return the recipe data
-    return NextResponse.json({ recipe }, { status: 200 });
+    return NextResponse.json({ recipes }, { status: 200 });
   } catch (error: unknown) {
-    if(error instanceof Error){
-      console.log('Error:', error);
+    console.log('Error:', error);
+
+    if (error instanceof Error) {
       return NextResponse.json(
-        { message: 'Failed to fetch recipe', error: error.message },
+        { message: 'Failed to fetch recipes', error: error.message },
+        { status: 500 }
+      );
+    } else {
+      return NextResponse.json(
+        { message: 'An unknown error occurred', error: 'Unknown error' },
         { status: 500 }
       );
     }
+
   }
 }

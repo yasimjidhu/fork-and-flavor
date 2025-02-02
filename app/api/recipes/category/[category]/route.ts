@@ -1,11 +1,11 @@
 import Recipe from "@/app/models/recipe";
 import { connectDB } from "@/utils/mongodb";
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 
-export async function GET(req: NextRequest,{ params }: { params: { category: string } }) {
+export async function GET(req: Request,{ params }: { params: Promise<{ category: string }> }) {
   try {
 
-    const { category } = params
+    const { category } = await params
 
     if (!category) {
       return NextResponse.json(
