@@ -113,7 +113,7 @@ export const Navbar = () => {
             className="cursor-pointer rounded-full object-cover"
             onClick={toggleDropDown}
           />
-          {dropDownOpen && (
+          {dropDownOpen && session?.user &&  (
             <div className="absolute top-12 right-0 bg-yellow-500 shadow-lg rounded-2xl py-2 w-40">
               <button
                 onClick={handleLogout}
