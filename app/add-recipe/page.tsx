@@ -28,10 +28,18 @@ const AddRecipe = () => {
 
   const router = useRouter();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement |HTMLTextAreaElement|HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setRecipeData((prev) => ({ ...prev, [name]: value }));
+  
+    if (name === 'ingredients') {
+      setRecipeData((prev) => ({ ...prev, ingredients: [value] })); 
+    } else {
+      setRecipeData((prev) => ({ ...prev, [name]: value }));
+    }
   };
+  
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -82,11 +90,12 @@ const AddRecipe = () => {
   };
 
   const handleAddIngredient = () => {
-    if (recipeData.ingredients.length > 0) {
-      setIngredientsList((prev) => [...prev, ...recipeData.ingredients]);
-      setRecipeData((prev) => ({ ...prev, ingredients: [] }));
+    if (recipeData.ingredients.length > 0 && recipeData.ingredients[0].trim()) {
+      setIngredientsList((prev) => [...prev, recipeData.ingredients[0]]);
+      setRecipeData((prev) => ({ ...prev, ingredients: [] })); 
     }
   };
+  
 
   const handleAddInstruction = () => {
     if (currentInstruction.trim()) {
